@@ -17,7 +17,7 @@ const AdminDashboard = ({data}) => {
         },
         {
             icon: CalendarIcon,
-            value: data.totalAttendance,
+            value: data.todayAttendance,
             label: "Today's Attendance",
             description: "Checked in today",
         },
@@ -38,7 +38,7 @@ const AdminDashboard = ({data}) => {
             {stats.map((s) => (
                 <div key={s.label} className='card card-hover p-5 sm:p-6 relative overflow-hidden group flex items-center justify-between'>
                     <div>
-                        <div className='absolute left-0 top-0 bottom-0 w-1 rounded-r-rull bg-slate-500/70 group-hover:bg-indigo-500/70'/>
+                        <div className='absolute left-0 top-0 bottom-0 w-1 rounded-r-full bg-slate-500/70 group-hover:bg-indigo-500/70'/>
                         <p className='text-sm font-medium text-slate-700'>{s.label}</p>
                         <p className='text-2xl font-bold text-slate-900 mt-1'>{s.value}</p>
                     </div>
