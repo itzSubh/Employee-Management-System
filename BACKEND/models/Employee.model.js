@@ -1,5 +1,4 @@
 import mongoose from "mongoose";
-import { stringify } from "node:querystring";
 import { DEPARTMENTS } from "../constants/departments.constant.js";
 
 const employeeSchema = new mongoose.Schema({
@@ -42,7 +41,7 @@ const employeeSchema = new mongoose.Schema({
         default: 0
     },
     employmentStatus: {
-        type: stringify,
+        type: String,
         enum: ["ACTIVE", "INACTIVE"],
         default: "ACTIVE"
     },
@@ -64,5 +63,4 @@ const employeeSchema = new mongoose.Schema({
     }
 }, {timestamps: true})
 
-const Employee = mongoose.models.Employee || mongoose.model("Employee", employeeSchema)
-export const Employee;
+export const Employee = mongoose.models.Employee || mongoose.model("Employee", employeeSchema)

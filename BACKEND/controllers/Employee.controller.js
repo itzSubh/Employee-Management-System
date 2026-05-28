@@ -3,10 +3,10 @@
 // Get employees
 // GET /api/employees
 
-import { Employee } from "../models/Employee.model";
+import { Employee } from "../models/Employee.model.js";
 
 import bcrypt from 'bcrypt';
-import { User } from "../models/User.model";
+import { User } from "../models/User.model.js";
 
 export const getEmployees = async(req, res) => {
     try {
