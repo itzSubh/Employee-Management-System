@@ -2,7 +2,7 @@
 // POST /api/leaves
 
 import { Employee } from "../models/Employee.model.js";
-import LeaveApplication from "../models/Leave.model.js";
+import {LeaveApplication} from "../models/Leave.model.js";
 
 export const createLeave = async(req, res)=> {
     try {
