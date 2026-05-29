@@ -13,6 +13,7 @@ import profileRouter from './routes/profile.route.js';
 import attendanceRouter from './routes/attendance.routes.js';
 import leaveRouter from './routes/leave.routes.js';
 import payslipRouter from './routes/payslip.routes.js';
+import dashboardRouter from './routes/dashboard.routes.js';
 // middleware
 
 app.use(cors())
@@ -28,5 +29,6 @@ app.use('/api/profile', profileRouter)
 app.use('/api/attendance', attendanceRouter)
 app.use('/api/leave', leaveRouter)
 app.use('/api/payslips', payslipRouter)
+app.use('/api/dashboard', dashboardRouter)
 await connectDB();
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`))
