@@ -3,9 +3,9 @@
 // get /api/dashboard
 
 import { DEPARTMENTS } from "../constants/departments.constant.js";
-import { Attendance } from "../models/Attendance.model";
-import { Employee } from "../models/Employee.model";
-import { LeaveApplication } from "../models/Leave.model";
+import { Attendance } from "../models/Attendance.model.js";
+import { Employee } from "../models/Employee.model.js";
+import { LeaveApplication } from "../models/Leave.model.js";
 import { Payslip } from "../models/Payslip.model.js";
 
 export const getDashboard = async(req, res) => {
