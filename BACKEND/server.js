@@ -3,6 +3,8 @@ import cors from 'cors'
 import "dotenv/config"
 import multer from 'multer';
 import connectDB from './config/db.js';
+import { serve } from "inngest/express";
+import { inngest, functions } from "./inngest/index.js"
 import dns from 'dns';
 dns.setServers(["1.1.1.1", "8.8.8.8"])
 const app = express()
@@ -30,5 +32,6 @@ app.use('/api/attendance', attendanceRouter)
 app.use('/api/leave', leaveRouter)
 app.use('/api/payslips', payslipRouter)
 app.use('/api/dashboard', dashboardRouter)
+app.use("/api/inngest", serve({ client: inngest, functions }));
 await connectDB();
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`))
