@@ -24,7 +24,7 @@ app.use(multer().none())
 
 // Route
 
-app.get("/", (req, res) => res.send("server is running"))
+app.get("/", (req, res) => res.send("server is running!!!"))
 app.use('/api/auth', authRouter)
 app.use('/api/employees', employeesRouter)
 app.use('/api/profile', profileRouter)
