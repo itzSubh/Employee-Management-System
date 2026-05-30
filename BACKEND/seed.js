@@ -15,7 +15,7 @@ async function registerAdmin(){
         }
         await connectDB()
 
-        const existingAdmin= await User.findOne({emai: process.env.ADMIN_EMAIL});
+        const existingAdmin= await User.findOne({email: process.env.ADMIN_EMAIL});
         if(existingAdmin){
             console.log("User already exist as role ", existingAdmin.role);
             process.exit(0)
