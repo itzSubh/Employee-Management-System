@@ -35,7 +35,7 @@ export const login = async(req, res) => {
             email: user.email
         }
         const token = jwt.sign(payload, process.env.JWT_SECRET, {expiresIn: "7d"})
-        return resolveSoa.json({user: payload, token});
+        return res.json({user: payload, token});
     } catch (error) {
         console.error("Login error:", error);
         return res.status(500).json({error: "Login failed"});
