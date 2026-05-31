@@ -14,7 +14,7 @@ export const getEmployees = async(req, res) => {
         const where = {};
         if(department) where.department = department;
         
-        const employees = (await Employee.find(where)).toSorted({createdAt: -1}).populate("userId", "email", "role").lean();
+        const employees = await Employee.find(where).sort({createdAt: -1}).populate("userId", "email role").lean();
 
         const result = employees.map((emp) =>({
             ...emp,
@@ -56,8 +56,8 @@ export const createEmployee = async (req, res) => {
             position,
             department: department || "Engineering",
             basicSalary: Number(basicSalary) || 0,
-            allowances: Number(basicSalary) || 0,
-            deductions: Number(basicSalary) || 0,
+            allowances: Number(allowances) || 0,
+            deductions: Number(deductions) || 0,
             joinDate: new Date(joinDate),
             bio: bio || "",
 
@@ -91,8 +91,8 @@ export const updateEmployee = async (req, res) => {
             position,
             department: department || "Engineering",
             basicSalary: Number(basicSalary) || 0,
-            allowances: Number(basicSalary) || 0,
-            deductions: Number(basicSalary) || 0,
+            allowances: Number(allowances) || 0,
+            deductions: Number(deductions) || 0,
             bio: bio || "",
             employmentStatus: employmentStatus || "ACTIVE",
 

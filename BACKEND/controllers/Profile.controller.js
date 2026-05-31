@@ -1,9 +1,12 @@
+import { Employee } from "../models/Employee.model.js";
+
 // get profile
 // GET /api/profile
 
 export const getProfile = async (req, res) => {
     try{
         const session = req.session;
+        console.log('getProfile session:', session);
         const employee = await Employee.findOne({userId: session.userId})
         if(!employee){
             return res.json({
@@ -14,6 +17,7 @@ export const getProfile = async (req, res) => {
         }
         return res.json(employee);
     } catch (error) {
+        console.error('Profile fetch error:', error);
         res.status(500).json({error: "Failed to fetch profile"}); 
     }
 }

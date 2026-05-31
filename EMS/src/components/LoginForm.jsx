@@ -1,17 +1,31 @@
 import React, { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import LoginLeftSide from './LoginLeftSide.jsx'
 import { ArrowLeftIcon, EyeIcon, EyeOffIcon, Loader2Icon } from 'lucide-react'
 import { Link } from 'react-router-dom'
-
+import { useAuth } from '../context/AuthContext.jsx'
+import toast from 'react-hot-toast'
 const LoginForm = ({ role, title, subtitle }) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
-    const [error, setError] = ('');
+    const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
+    const { login } = useAuth();
+    const navigate = useNavigate();
     
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setLoading(true);
+        setError('');
+        try {
+            await login(email, password, role);
+            navigate('/dashboard');
+        } catch (err) {
+            toast.error(err.response?.data?.error || "Login failed. Please try again.");
+        } finally {
+            setLoading(false);
+        }
     }
   return (
     <div className='min-h-screen flex flex-col md:flex-row'>
@@ -57,7 +71,7 @@ hover:to-indigo-600 disabled:opacity-50
 transition-all duration-200 shadow-lg
 shadow-indigo-500/25 active:scale-[0.98] flex
 items-center justify-center'>
-    {loading && <Loader2Icon classname='animate-spin h-4 w-4 mr-2'/>} Sign In
+    {loading && <Loader2Icon className='animate-spin h-4 w-4 mr-2'/>} Sign In
 </button>
             </form>
         </div>

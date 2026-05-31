@@ -3,17 +3,17 @@ import { useState, useEffect } from "react";
 import Loading from "../components/Loading.jsx";
 import EmployeeDashboard from "../components/EmployeeDashboard.jsx";
 import AdminDashboard from "../components/AdminDashboard.jsx";
+import api from "../api/axios.js";
+import toast from "react-hot-toast";
 const Dashboard = () => {
 
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    setData(dummyAdminDashboardData)
-    const timer = setTimeout(() => {
-      setLoading(false)
-    }, 1000)
-    return () => clearTimeout(timer)
+    api.get('/dashboard').then((res) => setData(res.data)).catch((err) => 
+    toast.error(err.response?.data?.error || arr?.message)).finally(() => 
+    setLoading(false))
   },[])
 
   if(loading) return <Loading />
