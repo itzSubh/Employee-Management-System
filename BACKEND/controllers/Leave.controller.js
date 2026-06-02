@@ -87,7 +87,7 @@ export const getLeaves = async (req, res) => {
             })
             const leaves = await LeaveApplication.find({
                 employeeId: employee._id
-            }).sort({createAt: -1});
+            }).toSorted({createdAt: -1});
             return res.json({
                 data: leaves,
                 employee: {...employee, id: employee._id.toString()}
@@ -107,7 +107,7 @@ export const updateLeaveStatus = async (req, res) => {
         if(!["APPROVED", "REJECTED", "PENDING"].includes(status)){
             return res.status(400).json({ error: "Invalid Status"});
         }
-        const leave = await LeaveApplication.findByIdAndUpdate(req.paras.id, {status}, {returnDocument: "after"})
+        const leave = await LeaveApplication.findByIdAndUpdate(req.params.id, {status}, {returnDocument: "after"})
         return res.json({success: true, data: leave})
     } catch (error) {
         return res.status(500).json({error: "Failed"});

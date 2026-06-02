@@ -83,7 +83,7 @@ export const updateEmployee = async (req, res) => {
         const employee = await Employee.findById(id);
         if(!employee) return res.status(404).json({error: "Employee not found"})
         
-            await Employee.findByIdAndUpdate({
+        const update = {
             firstName,
             lastName,
             email,
@@ -95,13 +95,12 @@ export const updateEmployee = async (req, res) => {
             deductions: Number(deductions) || 0,
             bio: bio || "",
             employmentStatus: employmentStatus || "ACTIVE",
+        };
 
-        })
+        await Employee.findByIdAndUpdate(id, update, { new: true });
 
         //  Update user record
-        const userUpdate = {
-            email
-        }
+        const userUpdate = {email}
         if(role) userUpdate.role = role;
         if(password) userUpdate.password = await bcrypt.hash(password, 10);
         await User.findByIdAndUpdate(employee.userId, userUpdate)

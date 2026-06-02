@@ -1,22 +1,30 @@
 import React, { useCallback, useEffect, useState } from 'react'
-import { dummyLeaveData } from '../assets/assets'
+import { dummyLeaveData } from '../assets/assets.jsx'
 import Loading from '../components/Loading.jsx'
 import { PalmtreeIcon, PlusIcon, ThermometerIcon, UmbrellaIcon } from 'lucide-react'
-import LeaveHistory from '../components/leave/leaveHistory.jsx'
+import LeaveHistory from '../components/leave/LeaveHistory.jsx'
 import ApplyLeaveModal from '../components/leave/ApplyLeaveModal.jsx'
-
+import { useAuth } from '../context/AuthContext.jsx'
+import toast from 'react-hot-toast'
+import api from '../api/axios.js'
 const Leave = () => {
+  const {user} = useAuth()
   const [leaves, setLeaves] = useState([])
   const [loading, setLoading] = useState(true)
   const [showModal, setShowModal] = useState(false)
   const [isDeleted, setIsDeleted] = useState(false)
-  const isAdmin = true;
+  const isAdmin = user?.role === "ADMIN";
 
-  const fetchLeaves = useCallback(() => {
-    setLeaves(dummyLeaveData)
-    setTimeout(() => {
-      setLoading(false);
-    }, 1000);
+  const fetchLeaves = useCallback(async () => {
+    try {
+      const res = await api.get('/leave')
+      setLeaves(res.data.data || [])
+      if(res.data.employee?.isDeleted) setIsDeleted(true)
+    } catch (error) {
+      toast.error(error?.response?.data?.error || error.message)
+    } finally{
+      setLoading(false)
+    }
   },[])
 
 
@@ -67,7 +75,7 @@ const Leave = () => {
         </div>
       )}
       <LeaveHistory leaves={leaves} isAdmin={isAdmin} onUpdate={fetchLeaves} />
-      <ApplyLeaveModal open={showModal} onClose={() => setShowModal(false)} onSuccess = {fetchLeaves} />
+      <ApplyLeaveModal open={showModal} onClose={() => setShowModal(false)} onSuccess={fetchLeaves} />
     </div>
   )
 }

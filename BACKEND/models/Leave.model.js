@@ -31,5 +31,5 @@ const leaveApplicationSchema = new mongoose.Schema({
 
 },{timestamps: true})
 
-export const LeaveApplication = mongoose.models.LeaveApplication || mongoose.model("LeaveApplication", leaveApplicationSchema);
+export const LeaveApplication = mongoose.model("LeaveApplication", leaveApplicationSchema);
 
