@@ -58,7 +58,8 @@ export const clockInOut = async (req, res) => {
             return res.json({success: true, type: "CHECK_OUT", data: existing});
         }
     } catch (error) {
-        res.status(500).json({ message: "Operation failed" });
+        console.error("Attendance clockInOut error:", error);
+        res.status(500).json({ message: error.message || "Operation failed" });
     }
 }
 
