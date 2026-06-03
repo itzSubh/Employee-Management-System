@@ -17,12 +17,23 @@ import leaveRouter from './routes/leave.routes.js';
 import payslipRouter from './routes/payslip.routes.js';
 import dashboardRouter from './routes/dashboard.routes.js';
 // middleware
-const allowedOrigins = [
-  'http://localhost:5173',
-  'http://localhost:3000',
-  'https://employee-management-system-vert-seven.vercel.app',
-  process.env.FRONTEND_URL
-].filter(Boolean);
+const allowedOrigins = (origin, callback) => {
+  const whitelist = [
+    'http://localhost:5173',
+    'http://localhost:3000',
+    process.env.FRONTEND_URL
+  ].filter(Boolean);
+
+  // Allow all Vercel deployments and localhost for development
+  if (!origin || 
+      origin.includes('localhost') || 
+      origin.includes('vercel.app') ||
+      whitelist.includes(origin)) {
+    callback(null, true);
+  } else {
+    callback(new Error('CORS not allowed'));
+  }
+};
 
 app.use(cors({
   origin: allowedOrigins,
