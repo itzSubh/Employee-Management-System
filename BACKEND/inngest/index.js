@@ -1,10 +1,15 @@
 import { cron, Inngest } from "inngest";
 import { Attendance } from "../models/Attendance.model.js";
 import { Employee } from "../models/Employee.model.js";
+import { LeaveApplication } from "../models/Leave.model.js";
 import sendEmail from "../config/nodemailer.js";
 
 // Create a client to send and receive events
-export const inngest = new Inngest({ id: "ems" });
+export const inngest = new Inngest({
+  id: "ems",
+  eventKey: process.env.INNGEST_EVENT_KEY,
+  signingKey: process.env.INNGEST_SIGNING_KEY,
+});
 
 // Create an empty array where we'll export future Inngest functions
 // auto-checkout for employe
@@ -108,11 +113,11 @@ const attendanceReminderCron = inngest.createFunction(
         const onLeaveIds = await step.run("get-on-leave-ids", async () => {
             const leaves = await LeaveApplication.find({
                 status: "APPROVED",
-                startDate: { $lte: new Date(toAsyncStreamable.endUTC)},
+                startDate: { $lte: new Date(today.endUTC)},
                 endDate: { $gte: new Date(today.startUTC)},
-            }).lean;
+            }).lean();
 
-            return leaves.map((l) => l.employeeId.toString())
+            return (leaves || []).map((l) => l.employeeId?.toString()).filter(Boolean)
         })
 
         // get employee ids who already checked in today
@@ -150,6 +155,7 @@ const attendanceReminderCron = inngest.createFunction(
                 })
             })
         }
+        await Promise.all(emailPromises)
         return {totalActive: activeEmployees.length, onLeave: onLeaveIds.length, checkedIn: checkedInIds.length, absent: absentEmployees.length}
   },
 );

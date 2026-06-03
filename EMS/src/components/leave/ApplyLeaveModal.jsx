@@ -87,9 +87,9 @@ const ApplyLeaveModal = ({open, onClose, onSuccess}) => {
                 <button onClick={onClose} type='button' className='btn-secondary flex-1'>
                     Cancel
                 </button>
-                <button   type='submit' disabled={loading} className='btn-primary flex-1 flex items-center justify-center gap-2'>
+                <button type='submit' disabled={loading} className='btn-primary flex-1 flex items-center justify-center gap-2'>
                     {loading ? <Loader2 className='w-4 h-4 animate-spin'/>: <Send  className='w-4 h-4'/>}
-                    {loading ? "Submitting...": "Submit..."}
+                    {loading ? "Submitting...": "Submit"}
                 </button>
             </div>
         </form>
