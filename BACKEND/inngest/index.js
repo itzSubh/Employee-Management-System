@@ -89,9 +89,10 @@ const attendanceReminderCron = inngest.createFunction(
   async ({ step }) => {
     // step 1 : Get today's date range
     const today = await step.run('get-today-date', () => {
-        const startUTC = new Date(new Date().toLocaleString("en-CA", {timeZone: "Asia/Kolkata"}) + "T00:00:00 + 05:30");
+        const istDate = new Date().toLocaleDateString("en-CA", { timeZone: "Asia/Kolkata" });
+        const startUTC = new Date(`${istDate}T00:00:00+05:30`);
         const endUTC = new Date(startUTC.getTime() + 24 * 60 * 60 * 1000);
-        return {startUTC: startUTC.toISOString(), endUTC:endUTC.toISOString()}
+        return { startUTC: startUTC.toISOString(), endUTC: endUTC.toISOString() };
     })
 
     // get all active, non-deleted employees
@@ -133,11 +134,10 @@ const attendanceReminderCron = inngest.createFunction(
         const absentEmployees = activeEmployees.filter((emp) => 
         !onLeaveIds.includes(emp._id) && !checkedInIds.includes(emp._id))
 
-        if(absentEmployees.length > 0){
-            await step.run("send-reminder-emails", async() => {
-                const emailPromises = absentEmployees.map((emp) => {
-                    // send email
-                    sendEmail({
+        if (absentEmployees.length > 0) {
+            const emailPromises = await step.run("send-reminder-emails", async() => {
+                return absentEmployees.map((emp) => {
+                    return sendEmail({
                         to: emp.email,
                         subject: `Attendance Reminder - Please Mark Your Attendance`,
                         body: ` <div style="max-width: 600px; font-family: Arial, sans-serif;">
@@ -153,9 +153,12 @@ const attendanceReminderCron = inngest.createFunction(
                             </div>`
                     })
                 })
+
+                await Promise.all(emailPromises);
+                return {emailsSent: absentEmployees.length}
             })
+            
         }
-        await Promise.all(emailPromises)
         return {totalActive: activeEmployees.length, onLeave: onLeaveIds.length, checkedIn: checkedInIds.length, absent: absentEmployees.length}
   },
 );
