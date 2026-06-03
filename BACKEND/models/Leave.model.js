@@ -8,7 +8,7 @@ const leaveApplicationSchema = new mongoose.Schema({
     },
     type: {
         type: String,
-        eneum: ["SICK", "CASUAL", "ANNUAL"],
+        enum: ["SICK", "CASUAL", "ANNUAL"],
         required: true
     },
     startDate: {
@@ -31,5 +31,5 @@ const leaveApplicationSchema = new mongoose.Schema({
 
 },{timestamps: true})
 
-export const LeaveApplication = mongoose.models.LeaveApplication || mongoose.model("LeaveApplication", leaveApplicationSchema);
+export const LeaveApplication = mongoose.model("LeaveApplication", leaveApplicationSchema);
 

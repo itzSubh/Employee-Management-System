@@ -1,5 +1,6 @@
 import { Loader2Icon, LockIcon, X } from 'lucide-react'
 import React, { useState } from 'react'
+import api from '../api/axios'
 
 const ChangePasswordModal = ({open, onClose}) => {
 
@@ -8,6 +9,22 @@ const ChangePasswordModal = ({open, onClose}) => {
 
     const handleSubmit = async(e)=>{
         e.preventDefault();
+        setLoading(true)
+        setMessage({type: "", text: ""})
+        const formData = new FormData(e.currentTarget)
+        const currentPassword = formData.get("currentPassword")
+        const newPassword = formData.get("newPassword")
+
+        try {
+            const {data} = await api.post("/auth/change-password", {currentPassword, newPassword})
+            if(!data.success) throw new Error(data?.error || "Failed")
+                setMessage({type: "success", text: "Password Updated Successfully"})
+                e.target.reset();
+        } catch (error) {
+            setMessage({type: "error", text: error.message})
+        } finally {
+            setLoading(false);
+        }
     }
     if(!open) return null;
   return (
@@ -17,12 +34,11 @@ const ChangePasswordModal = ({open, onClose}) => {
       <div className='relative bg-white rounded-2xl shadow-2xl w-full max-w-md animate-fade-in' onClick={(e) => e.stopPropagation()}>
         <div className='flex items-center justify-between p-6 pb-0'>
             <h2 className='text-lg font-medium text-slate-900 flex items-center gap-2'> <LockIcon  className='w-5 h-5 text-slate-400'/> Change Password</h2>
-            <button onClick={onClose} className='p-2 rounded-lg hover:bg-sllate-100 transiton-colors text-slate-400 hover:text-slate-600'><X className='w-5 h-5'/></button>
+            <button onClick={onClose} className='p-2 rounded-lg hover:bg-slate-100 transition-colors text-slate-400 hover:text-slate-600'><X className='w-5 h-5'/></button>
         </div>
         <form onSubmit={handleSubmit} className='p-6 space-y-5'>
             {message.text && (
-                <div>
-                    <div className= {`p-3 rounded-xl text-sm flex items-start gap-3 ${message.type==="success" ? "bg-emerald-500":"bg-rose-500"}`} />
+                <div className={`p-3 rounded-xl text-sm ${message.type === "success" ? "bg-emerald-500 text-white" : "bg-rose-500 text-white"}`}>
                     {message.text}
                 </div>
             )}
@@ -36,7 +52,7 @@ const ChangePasswordModal = ({open, onClose}) => {
             </div>
             <div className='flex gap-3 pt-2'>
                 <button type='button' onClick={onClose} className='btn-secondary flex-1'>Cancel</button>
-                <button type='submit' disabled = {loading} className='btn-primary flexx-1 flex justify-center items-center gap-2'>
+                <button type='submit' disabled={loading} className='btn-primary flex-1 flex justify-center items-center gap-2'>
                     {loading && <Loader2Icon className='w-4 h-4 animate-spin' />}
                     Update Password
                 </button>

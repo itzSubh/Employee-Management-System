@@ -4,17 +4,16 @@
 // GET /api/employees
 
 import { Employee } from "../models/Employee.model.js";
-
 import bcrypt from 'bcrypt';
 import { User } from "../models/User.model.js";
 
 export const getEmployees = async(req, res) => {
     try {
-        const {department} = req.query;
+        const { department } = req.query;
         const where = {};
         if(department) where.department = department;
         
-        const employees = (await Employee.find(where)).toSorted({createdAt: -1}).populate("userId", "email", "role").lean();
+        const employees = await Employee.find(where).sort({createdAt: -1}).populate("userId", "email role").lean();
 
         const result = employees.map((emp) =>({
             ...emp,
@@ -56,8 +55,8 @@ export const createEmployee = async (req, res) => {
             position,
             department: department || "Engineering",
             basicSalary: Number(basicSalary) || 0,
-            allowances: Number(basicSalary) || 0,
-            deductions: Number(basicSalary) || 0,
+            allowances: Number(allowances) || 0,
+            deductions: Number(deductions) || 0,
             joinDate: new Date(joinDate),
             bio: bio || "",
 
@@ -83,7 +82,7 @@ export const updateEmployee = async (req, res) => {
         const employee = await Employee.findById(id);
         if(!employee) return res.status(404).json({error: "Employee not found"})
         
-            await Employee.findByIdAndUpdate({
+        const update = {
             firstName,
             lastName,
             email,
@@ -91,17 +90,16 @@ export const updateEmployee = async (req, res) => {
             position,
             department: department || "Engineering",
             basicSalary: Number(basicSalary) || 0,
-            allowances: Number(basicSalary) || 0,
-            deductions: Number(basicSalary) || 0,
+            allowances: Number(allowances) || 0,
+            deductions: Number(deductions) || 0,
             bio: bio || "",
             employmentStatus: employmentStatus || "ACTIVE",
+        };
 
-        })
+        await Employee.findByIdAndUpdate(id, update, { new: true });
 
         //  Update user record
-        const userUpdate = {
-            email
-        }
+        const userUpdate = {email}
         if(role) userUpdate.role = role;
         if(password) userUpdate.password = await bcrypt.hash(password, 10);
         await User.findByIdAndUpdate(employee.userId, userUpdate)
